@@ -1,4 +1,4 @@
-@(form: Form[String])(implicit request: MessagesRequestHeader)
+@(form: Form[(String, Long)])(implicit request: MessagesRequestHeader)
 
 <html>
 <head>
@@ -13,6 +13,7 @@
             <fieldset>
 
                 @helper.inputText(form("name"), '_label -> "名前")
+                @helper.inputText(form("price"), '_label -> "値段")
 
             </fieldset>
 

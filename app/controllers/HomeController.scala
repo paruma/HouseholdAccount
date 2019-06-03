@@ -19,31 +19,36 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
     Ok(views.html.list(items))
   }
 
-  val todoForm: Form[String] = Form("name" -> nonEmptyText)
+
+  val form: Form[(String, Long)] = Form(
+    tuple(
+      "name" -> nonEmptyText,
+      "price" -> longNumber)
+  )
 
   // GET /new
   def register: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    Ok(views.html.createForm(todoForm))
+    Ok(views.html.createForm(form))
   }
 
   // POST /
   def add(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    val name: String = todoForm.bindFromRequest().get
-    service.insert(Entry(id = None, name))
+    val (name, price) = form.bindFromRequest().get
+    service.insert(Entry(id = None, name, price))
     Redirect(routes.HomeController.list())
   }
 
   // GET     /edit/:todoId
-  def edit(todoId: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    service.findById(todoId).map { todo =>
-      Ok(views.html.editForm(todoId, todoForm.fill(todo.name)))
+  def edit(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    service.findById(id).map { entry =>
+      Ok(views.html.editForm(id, form.fill(entry.name, entry.price)))
     }.getOrElse(NotFound)
   }
 
   // POST   /:todoId
-  def update(todoId: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
-    val name: String = todoForm.bindFromRequest().get
-    service.update(todoId, Entry(Some(todoId), name))
+  def update(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    val (name, price) = form.bindFromRequest().get
+    service.update(id, Entry(Some(id), name, price))
     Redirect(routes.HomeController.list())
   }
 

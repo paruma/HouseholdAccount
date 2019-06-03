@@ -8,7 +8,7 @@ import play.api.db.DBApi
 
 import scala.language.postfixOps
 
-case class Entry(id: Option[Long], name: String)
+case class Entry(id: Option[Long], name: String, price:Long)
 
 @javax.inject.Singleton
 class EntryService @Inject()(dbapi: DBApi) {
@@ -17,8 +17,9 @@ class EntryService @Inject()(dbapi: DBApi) {
 
   val simple: RowParser[Entry] = {
     get[Option[Long]]("household_account.id") ~
-      get[String]("household_account.name") map {
-      case id ~ name => Entry(id, name)
+      get[String]("household_account.name") ~
+      get[Long]("household_account.price") map {
+      case id ~ name ~ price => Entry(id, name, price)
     }
   }
 
@@ -40,10 +41,11 @@ class EntryService @Inject()(dbapi: DBApi) {
     db.withConnection { implicit connection =>
       SQL(
         """
-        insert into household_account values ((select next value for id_seq), {name})
+        insert into household_account values ((select next value for id_seq), {name}, {price})
         """
       ).on(
-        'name -> entry.name
+        'name -> entry.name,
+        'price -> entry.price
       ).executeUpdate()
     }
   }
@@ -59,12 +61,14 @@ class EntryService @Inject()(dbapi: DBApi) {
       SQL(
         """
           update household_account
-          set name = {name}
+          set name = {name},
+            price = {price}
           where id = {id}
         """
       ).on(
         'id -> id,
-        'name -> entry.name
+        'name -> entry.name,
+        'price -> entry.price
       ).executeUpdate()
     }
   }
