@@ -8,7 +8,7 @@ import play.api.db.DBApi
 
 import scala.language.postfixOps
 
-case class Entry(id: Option[Long], name: String, price:Long)
+case class Entry(id: Option[Long], name: String, price: Long)
 
 @javax.inject.Singleton
 class EntryService @Inject()(dbapi: DBApi) {
@@ -52,7 +52,9 @@ class EntryService @Inject()(dbapi: DBApi) {
 
   def findById(id: Long): Option[Entry] = {
     db.withConnection { implicit connection =>
-      SQL("select * from household_account where id = {id}").on('id -> id).as(simple.singleOpt)
+      SQL("select * from household_account where id = {id}")
+        .on('id -> id)
+        .as(simple.singleOpt)
     }
   }
 
@@ -75,7 +77,9 @@ class EntryService @Inject()(dbapi: DBApi) {
 
   def delete(id: Long) = {
     db.withConnection { implicit connection =>
-      SQL("delete from household_account where id = {id}").on('id -> id).executeUpdate()
+      SQL("delete from household_account where id = {id}")
+        .on('id -> id)
+        .executeUpdate()
     }
   }
 

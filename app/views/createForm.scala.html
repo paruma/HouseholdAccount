@@ -13,7 +13,7 @@
             <fieldset>
 
                 @helper.inputText(form("name"), '_label -> "名前")
-                @helper.inputText(form("price"), '_label -> "値段")
+                @helper.inputText(form("price"), 'type -> "number", 'min -> 0)
 
             </fieldset>
 
