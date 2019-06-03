@@ -12,8 +12,8 @@
 
             <fieldset>
 
-                @helper.inputText(form("name"), '_label -> "名前")
-                @helper.inputText(form("price"), 'type -> "number", 'min -> 0)
+                @helper.inputText(form("name"), '_label -> "名前", 'required -> ())
+                @helper.inputText(form("price"), 'type -> "number", 'min -> 0, 'required -> ())
 
             </fieldset>
 
