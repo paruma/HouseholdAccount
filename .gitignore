@@ -107,3 +107,6 @@ server.pid
 *.log
 
 # End of https://www.gitignore.io/api/scala,intellij,playframework
+
+.idea/*
+.g8/*
