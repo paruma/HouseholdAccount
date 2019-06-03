@@ -1,9 +1,9 @@
 @import services._
-@(items: Seq[Todo])
+@(items: Seq[Entry])
 
 <html>
 <head>
-    <title>Todo</title>
+    <title>ホーム - 家計簿</title>
 </head>
 <body>
 
@@ -15,14 +15,14 @@
         </tr>
         </thead>
         <tbody>
-        @items.map { todo =>
+        @items.map { entry =>
         <tr>
-            <td><a href="@controllers.routes.TodoController.todoEdit(todo.id.get)">@todo.name</a></td>
+            <td><a href="@controllers.routes.HomeController.edit(entry.id.get)">@entry.name</a></td>
         </tr>
         }
         </tbody>
     </table>
-    <a href="@controllers.routes.TodoController.todoNew()">登録画面</a>
+    <a href="@controllers.routes.HomeController.register()">登録画面</a>
 </section>
 
 </body>

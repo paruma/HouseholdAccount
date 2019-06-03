@@ -1,18 +1,18 @@
-@(todoForm: Form[String])(implicit request: MessagesRequestHeader)
+@(form: Form[String])(implicit request: MessagesRequestHeader)
 
 <html>
 <head>
-    <title>Todo</title>
+    <title>登録 - 家計簿</title>
 </head>
     <body>
-        <h1>Todo登録</h1>
+        <h1>登録</h1>
 
-        @helper.form(action = routes.TodoController.todoAdd()) {
+        @helper.form(action = routes.HomeController.add()) {
             @helper.CSRF.formField
 
             <fieldset>
 
-                @helper.inputText(todoForm("name"), '_label -> "名前")
+                @helper.inputText(form("name"), '_label -> "名前")
 
             </fieldset>
 

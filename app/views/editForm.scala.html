@@ -1,19 +1,19 @@
-@(id: Long, todoForm: Form[String])(implicit request: MessagesRequestHeader)
+@(id: Long, form: Form[String])(implicit request: MessagesRequestHeader)
 
 <html>
 <head>
-    <title>Todo</title>
+    <title>更新 - 家計簿</title>
 </head>
     <body>
 
-    <h1>Todo更新</h1>
+    <h1>更新</h1>
 
-    @helper.form(action = routes.TodoController.todoUpdate(id)) {
+    @helper.form(action = routes.HomeController.update(id)) {
         @helper.CSRF.formField
 
         <fieldset>
 
-            @helper.inputText(todoForm("name"), '_label -> "名前")
+            @helper.inputText(form("name"), '_label -> "名前")
 
         </fieldset>
 
@@ -21,7 +21,7 @@
 
     }
 
-    @helper.form(action = routes.TodoController.todoDelete(id)) {
+    @helper.form(action = routes.HomeController.delete(id)) {
         @helper.CSRF.formField
         <input type="submit" value="削除" class="btn danger">
     }
