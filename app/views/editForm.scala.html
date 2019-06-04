@@ -1,4 +1,4 @@
-@(id: Long, form: Form[(String, Long)])(implicit request: MessagesRequestHeader)
+@(id: Long, form: Form[(String, Long, java.util.Date)])(implicit request: MessagesRequestHeader)
 
 <html>
 <head>
@@ -15,6 +15,7 @@
 
     @helper.inputText(form("name"), '_label -> "名前", 'required -> ())
     @helper.inputText(form("price"), 'type -> "number", 'min -> 0, 'required -> ())
+    @helper.inputText(form("date"), 'type -> "date", 'required -> ())
 
 </fieldset>
 

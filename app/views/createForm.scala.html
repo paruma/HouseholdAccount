@@ -1,4 +1,4 @@
-@(form: Form[(String, Long)])(implicit request: MessagesRequestHeader)
+@(form: Form[(String, Long, java.util.Date)])(implicit request: MessagesRequestHeader)
 
 <html>
 <head>
@@ -13,12 +13,13 @@
             <fieldset>
 
                 @helper.inputText(form("name"), '_label -> "名前", 'required -> ())
-                @helper.inputText(form("price"), 'type -> "number", 'min -> 0, 'required -> ())
+                @helper.inputText(form("price"), '_label -> "値段", 'type -> "number", 'min -> 0, 'required -> ())
+                <!--TODO: デフォルトでtodayにする-->
+                @helper.inputText(form("date"), '_label -> "日にち", 'type -> "date", 'required -> ())
 
             </fieldset>
 
             <input type="submit" value="登録">
-
         }
 
     </body>

@@ -12,6 +12,7 @@
         <thead>
             <th>名前</th>
             <th>値段</th>
+            <th>日にち</th>
         </tr>
         </thead>
         <tbody>
@@ -19,6 +20,7 @@
         <tr>
             <td><a href="@controllers.routes.HomeController.edit(entry.id.get)">@{entry.name}</a></td>
             <td>@{entry.price}円</td>
+            <td>@{entry.date}</td>
         </tr>
         }
         </tbody>
