@@ -1,6 +1,6 @@
 package services
 
-import java.util.Date
+import java.util.{Calendar, Date}
 
 import javax.inject.Inject
 import anorm.SqlParser._
@@ -27,7 +27,7 @@ class EntryService @Inject()(dbapi: DBApi) {
 
   def list(): Seq[Entry] = {
 
-    db.withConnection { implicit connection =>
+    val items = db.withConnection { implicit connection =>
 
       SQL(
         """
@@ -36,7 +36,7 @@ class EntryService @Inject()(dbapi: DBApi) {
       ).as(simple *)
 
     }
-
+    items.sortBy(entry => (entry.date, entry.id))
   }
 
   def insert(entry: Entry): Int = {

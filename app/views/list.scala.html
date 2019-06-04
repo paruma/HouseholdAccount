@@ -1,6 +1,6 @@
 @import services._
 @import java.util._
-@(items: Seq[Entry])
+@(info: Info)
 
 <html>
 <head>
@@ -18,7 +18,7 @@
             <th>日にち</th>
         </thead>
         <tbody>
-        @items.map { entry =>
+        @info.getItemsByTotal.map { entry =>
         <tr>
             <td><a href="@controllers.routes.HomeController.edit(entry.id.get)">@{entry.name}</a></td>
             <td>@{entry.price}円</td>
@@ -28,29 +28,7 @@
         </tbody>
     </table>
     @{
-        if(items.nonEmpty){
-            def getYear(date: Date): Int = {
-                val cal = Calendar.getInstance
-                cal.setTime(date)
-                cal.get(Calendar.YEAR)
-            }
-
-            def getMonth(date: Date): Int = {
-                val cal = Calendar.getInstance
-                cal.setTime(date)
-                cal.get(Calendar.MONTH) + 1
-            }
-            val minYear = items.map(entry => getYear(entry.date)).min
-            val maxYear = items.map(entry => getYear(entry.date)).max
-
-            val yearToItems = items.groupBy(entry => getYear(entry.date))
-
-            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-            val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
-            val currentYearItems = items.filter(entry=>getYear(entry.date) == currentYear)
-            val currentMonthItems = currentYearItems.filter(entry=> getMonth(entry.date) == currentMonth)
-
-
+        if(info.nonEmpty){
             <table>
                 <thead>
                 <th>年</th>
@@ -58,8 +36,8 @@
 
                 </thead>
                 <tbody>
-                {(minYear to maxYear).map { year: Int =>
-                    val sumPrice = yearToItems.getOrElse(year, Seq.empty).map(entry => entry.price).sum
+                {(info.minYear to info.maxYear).map { year: Int =>
+                    val sumPrice = info.sumByYear(year)
                     <tr>
                         <td><a href={controllers.routes.HomeController.listYear(year).url}>{year}年</a></td>
                         <td>{sumPrice}円</td>
@@ -67,7 +45,7 @@
                 }}
                 <tr>
                     <td>合計</td>
-                    <td>{items.map(entry=>entry.price).sum}円</td>
+                    <td>{info.sumByTotal}円</td>
                 </tr>
                 </tbody>
             </table>
