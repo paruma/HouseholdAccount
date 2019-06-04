@@ -9,6 +9,8 @@
 <body>
 <h1>家計簿</h1>
 <section>
+    <p><a href="@controllers.routes.HomeController.register()">登録</a></p>
+
     <table>
         <thead>
             <th>名前</th>
@@ -27,26 +29,46 @@
         </tbody>
     </table>
 
-    <p><a href="@controllers.routes.HomeController.register()">登録</a></p>
     @{
-    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
-    val currentYearItems = items.filter{ entry=>
-    val cal = Calendar.getInstance
-    cal.setTime(entry.date)
-    cal.get(Calendar.YEAR) == currentYear
-    }
-    val currentMonthItems = currentYearItems.filter{ entry=>
-    val cal = Calendar.getInstance
-    cal.setTime(entry.date)
-    cal.get(Calendar.MONTH)+1 == currentMonth
-    }
-    <p>
-        {currentYear}年の合計: {currentYearItems.map(entry => entry.price).sum}円
-    </p>
-    <p>
-        {currentYear}年{currentMonth}月の合計: {currentMonthItems.map(entry => entry.price).sum}円
-    </p>
+        def getYear(date: Date): Int = {
+            val cal = Calendar.getInstance
+            cal.setTime(date)
+            cal.get(Calendar.YEAR)
+        }
+
+        def getMonth(date: Date): Int = {
+            val cal = Calendar.getInstance
+            cal.setTime(date)
+            cal.get(Calendar.MONTH) + 1
+        }
+        val minYear = items.map(entry => getYear(entry.date)).min
+        val maxYear = items.map(entry => getYear(entry.date)).max
+
+        val yearToItems = items.groupBy(entry => getYear(entry.date))
+
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        val currentYearItems = items.filter(entry=>getYear(entry.date) == currentYear)
+        val currentMonthItems = currentYearItems.filter(entry=> getMonth(entry.date) == currentMonth)
+
+
+        <table>
+            <thead>
+            <th>年</th>
+            <th>金額</th>
+
+            </thead>
+            <tbody>
+            {(minYear to maxYear).map { year: Int =>
+                val sumPrice = yearToItems.getOrElse(year, Seq.empty).map(entry => entry.price).sum
+                <tr>
+                    <!--<td><a href="@controllers.routes.HomeController.year(year)">{year}年</a></td>-->
+                    <td>{year}年</td>
+                    <td>{sumPrice}円</td>
+                </tr>
+            }}
+            </tbody>
+        </table>
 
     }
 </section>
