@@ -17,7 +17,8 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
 
   def list(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val items = service.list()
-    Ok(views.html.list(items))
+    val sortedItems = items.sortBy(entry => (entry.date, entry.id))
+    Ok(views.html.list(sortedItems))
   }
 
 
@@ -41,24 +42,26 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
     Redirect(routes.HomeController.list())
   }
 
-  // GET     /edit/:todoId
+  // GET     /edit/:id
   def edit(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     service.findById(id).map { entry =>
       Ok(views.html.editForm(id, form.fill(entry.name, entry.price, new Date(entry.date.getTime))))
     }.getOrElse(NotFound)
   }
 
-  // POST   /:todoId
+  // POST   /:id
   def update(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val (name, price, date) = form.bindFromRequest().get
     service.update(id, Entry(Some(id), name, price, date))
     Redirect(routes.HomeController.list())
   }
 
-  // POST   /:todoId/delete
+  // POST   /:id/delete
   def delete(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     service.delete(id)
     Redirect(routes.HomeController.list())
+
+
   }
 
 }
