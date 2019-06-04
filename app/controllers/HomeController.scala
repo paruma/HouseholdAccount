@@ -1,6 +1,6 @@
 package controllers
 
-import java.util.{Calendar, Date}
+import java.util.{Calendar, Date, GregorianCalendar}
 
 import javax.inject._
 import play.api.data.Form
@@ -16,8 +16,9 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
   }
 
   def list(): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+
     val items = service.list()
-    val sortedItems = items.sortBy(entry => (entry.date, entry.id))// TODO: serviceに投げる
+    val sortedItems = items.sortBy(entry => (entry.date, entry.id)) // TODO: serviceに投げる
     Ok(views.html.list(sortedItems))
   }
 
@@ -32,6 +33,7 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
 
   // GET /new
   def register: Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+
     Ok(views.html.createForm(form))
   }
 
@@ -64,10 +66,17 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
   }
 
   // GET /year/:year
-  def listYear(year:Int): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+  def listYear(year: Int): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     val items = service.list()
-    val sortedItems = items.sortBy(entry => (entry.date, entry.id))// TODO:serviceに投げる
+    val sortedItems = items.sortBy(entry => (entry.date, entry.id)) // TODO:serviceに投げる
     Ok(views.html.listYear(sortedItems, year))
+  }
+
+  // GET /month/:year:month
+  def listMonth(year: Int, month: Int): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
+    val items = service.list()
+    val sortedItems = items.sortBy(entry => (entry.date, entry.id)) // TODO:serviceに投げる
+    Ok(views.html.listMonth(sortedItems, year, month))
   }
 
 }

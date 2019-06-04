@@ -1,13 +1,13 @@
 @import services._
 @import java.util._
-@(items: Seq[Entry], year:Int)
+@(items: Seq[Entry], year:Int, month:Int)
 
 <html>
 <head>
-    <title>@{year}年 - 家計簿</title>
+    <title>@{year}年@{month}月 - 家計簿</title>
 </head>
 <body>
-<h1>@{year}年</h1>
+<h1>@{year}年@{month}月</h1>
 <section>
     @{
         if(items.nonEmpty){
@@ -22,7 +22,17 @@
                 cal.setTime(date)
                 cal.get(Calendar.MONTH) + 1
             }
-            val yearItems = items.filter(entry => getYear(entry.date) == year)
+
+            def getDay(date: Date): Int = {
+                val cal = Calendar.getInstance
+                cal.setTime(date)
+                cal.get(Calendar.DATE)
+            }
+            val yearMonthItems = items.filter(entry => getYear(entry.date) == year && getMonth(entry.date) == month)
+
+            val numDays = {
+                new GregorianCalendar(year, month -1 , 1).getActualMaximum(Calendar.DAY_OF_MONTH)
+            }
 
             <table>
                 <thead>
@@ -31,7 +41,7 @@
                 <th>日にち</th>
                 </thead>
                 <tbody>
-                {yearItems.map { entry =>
+                {yearMonthItems.map { entry =>
                 <tr>
                     <td><a href={controllers.routes.HomeController.edit(entry.id.get).url}>{entry.name}</a></td>
                     <td>{entry.price}円</td>
@@ -43,21 +53,21 @@
 
             <table>
                 <thead>
-                <th>月</th>
+                <th>日</th>
                 <th>金額</th>
 
                 </thead>
                 <tbody>
-                {(1 to 12).map { month: Int =>
-                    val sumPrice = yearItems.filter(entry => getMonth(entry.date) == month).map(entry => entry.price).sum
+                {(1 to numDays).map { day: Int =>
+                    val sumPrice = yearMonthItems.filter(entry => getDay(entry.date) == day).map(entry => entry.price).sum
                     <tr>
-                        <td><a href={controllers.routes.HomeController.listMonth(year, month).url}>{month}月</a></td>
+                        <td>{day}日</td>
                         <td>{sumPrice}円</td>
                     </tr>
                 }}
                 <tr>
                     <td>合計</td>
-                    <td>{yearItems.map(entry => entry.price).sum}円</td>
+                    <td>{yearMonthItems.map(entry => entry.price).sum}円</td>
                 </tr>
                 </tbody>
             </table>
