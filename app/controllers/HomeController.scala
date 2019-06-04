@@ -1,6 +1,6 @@
 package controllers
 
-import java.util.Date
+import java.util.{Calendar, Date}
 
 import javax.inject._
 import play.api.data.Form
@@ -60,7 +60,6 @@ class HomeController @Inject()(service: EntryService, mcc: MessagesControllerCom
   def delete(id: Long): Action[AnyContent] = Action { implicit request: MessagesRequest[AnyContent] =>
     service.delete(id)
     Redirect(routes.HomeController.list())
-
 
   }
 

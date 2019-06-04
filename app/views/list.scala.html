@@ -1,4 +1,5 @@
 @import services._
+@import java.util._
 @(items: Seq[Entry])
 
 <html>
@@ -6,7 +7,7 @@
     <title>ホーム - 家計簿</title>
 </head>
 <body>
-
+<h1>家計簿</h1>
 <section>
     <table>
         <thead>
@@ -25,8 +26,29 @@
         }
         </tbody>
     </table>
-    <p>合計: @{items.map(entry=> entry.price).sum}円</p>
+
     <p><a href="@controllers.routes.HomeController.register()">登録</a></p>
+    @{
+    val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+    val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+    val currentYearItems = items.filter{ entry=>
+    val cal = Calendar.getInstance
+    cal.setTime(entry.date)
+    cal.get(Calendar.YEAR) == currentYear
+    }
+    val currentMonthItems = currentYearItems.filter{ entry=>
+    val cal = Calendar.getInstance
+    cal.setTime(entry.date)
+    cal.get(Calendar.MONTH)+1 == currentMonth
+    }
+    <p>
+        {currentYear}年の合計: {currentYearItems.map(entry => entry.price).sum}円
+    </p>
+    <p>
+        {currentYear}年{currentMonth}月の合計: {currentMonthItems.map(entry => entry.price).sum}円
+    </p>
+
+    }
 </section>
 
 </body>
