@@ -16,7 +16,6 @@
             <th>名前</th>
             <th>値段</th>
             <th>日にち</th>
-        </tr>
         </thead>
         <tbody>
         @items.map { entry =>
@@ -28,47 +27,51 @@
         }
         </tbody>
     </table>
-
     @{
-        def getYear(date: Date): Int = {
-            val cal = Calendar.getInstance
-            cal.setTime(date)
-            cal.get(Calendar.YEAR)
-        }
+        if(items.nonEmpty){
+            def getYear(date: Date): Int = {
+                val cal = Calendar.getInstance
+                cal.setTime(date)
+                cal.get(Calendar.YEAR)
+            }
 
-        def getMonth(date: Date): Int = {
-            val cal = Calendar.getInstance
-            cal.setTime(date)
-            cal.get(Calendar.MONTH) + 1
-        }
-        val minYear = items.map(entry => getYear(entry.date)).min
-        val maxYear = items.map(entry => getYear(entry.date)).max
+            def getMonth(date: Date): Int = {
+                val cal = Calendar.getInstance
+                cal.setTime(date)
+                cal.get(Calendar.MONTH) + 1
+            }
+            val minYear = items.map(entry => getYear(entry.date)).min
+            val maxYear = items.map(entry => getYear(entry.date)).max
 
-        val yearToItems = items.groupBy(entry => getYear(entry.date))
+            val yearToItems = items.groupBy(entry => getYear(entry.date))
 
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
-        val currentYearItems = items.filter(entry=>getYear(entry.date) == currentYear)
-        val currentMonthItems = currentYearItems.filter(entry=> getMonth(entry.date) == currentMonth)
+            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+            val currentYearItems = items.filter(entry=>getYear(entry.date) == currentYear)
+            val currentMonthItems = currentYearItems.filter(entry=> getMonth(entry.date) == currentMonth)
 
 
-        <table>
-            <thead>
-            <th>年</th>
-            <th>金額</th>
+            <table>
+                <thead>
+                <th>年</th>
+                <th>金額</th>
 
-            </thead>
-            <tbody>
-            {(minYear to maxYear).map { year: Int =>
-                val sumPrice = yearToItems.getOrElse(year, Seq.empty).map(entry => entry.price).sum
+                </thead>
+                <tbody>
+                {(minYear to maxYear).map { year: Int =>
+                    val sumPrice = yearToItems.getOrElse(year, Seq.empty).map(entry => entry.price).sum
+                    <tr>
+                        <td><a href={controllers.routes.HomeController.listYear(year).url}>{year}年</a></td>
+                        <td>{sumPrice}円</td>
+                    </tr>
+                }}
                 <tr>
-                    <!--<td><a href="@controllers.routes.HomeController.year(year)">{year}年</a></td>-->
-                    <td>{year}年</td>
-                    <td>{sumPrice}円</td>
+                    <td>合計</td>
+                    <td>{items.map(entry=>entry.price).sum}円</td>
                 </tr>
-            }}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        }
 
     }
 </section>

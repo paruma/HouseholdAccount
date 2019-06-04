@@ -1,0 +1,72 @@
+@import services._
+@import java.util._
+@(items: Seq[Entry], year:Int)
+
+<html>
+<head>
+    <title>年次集計 - 家計簿</title>
+</head>
+<body>
+<h1>@{year}年</h1>
+<section>
+
+
+    @{
+        if(items.nonEmpty){
+            def getYear(date: Date): Int = {
+                val cal = Calendar.getInstance
+                cal.setTime(date)
+                cal.get(Calendar.YEAR)
+            }
+
+            def getMonth(date: Date): Int = {
+                val cal = Calendar.getInstance
+                cal.setTime(date)
+                cal.get(Calendar.MONTH) + 1
+            }
+            val yearItems = items.filter(entry => getYear(entry.date) == year)
+
+            <table>
+                <thead>
+                <th>名前</th>
+                <th>値段</th>
+                <th>日にち</th>
+                </thead>
+                <tbody>
+                {yearItems.map { entry =>
+                <tr>
+                    <td><a href={controllers.routes.HomeController.edit(entry.id.get).url}>{entry.name}</a></td>
+                    <td>{entry.price}円</td>
+                    <td>{entry.date}</td>
+                </tr>
+                }}
+                </tbody>
+            </table>
+
+            <table>
+                <thead>
+                <th>月</th>
+                <th>金額</th>
+
+                </thead>
+                <tbody>
+                {(1 to 12).map { month: Int =>
+                    val sumPrice = yearItems.filter(entry => getMonth(entry.date) == month).map(entry => entry.price).sum
+                    <tr>
+                        <td>{month}月</td>
+                        <td>{sumPrice}円</td>
+                    </tr>
+                }}
+                <tr>
+                    <td>合計</td>
+                    <td>{yearItems.map(entry => entry.price).sum}円</td>
+                </tr>
+                </tbody>
+            </table>
+        }
+
+    }
+</section>
+
+</body>
+</html>
